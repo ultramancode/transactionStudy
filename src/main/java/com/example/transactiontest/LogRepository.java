@@ -6,6 +6,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
@@ -16,7 +17,7 @@ public class LogRepository {
     private final EntityManager em;
 
     public static String TERM = "로그예외";
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void save(Log logMessage){
         log.info("log 저장");
         em.persist(logMessage);
