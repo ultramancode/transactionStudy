@@ -67,10 +67,10 @@ class MemberServiceTest {
      * logRepository    @Transactional: OFF
      */
     @Test
-    void SingleTx_success() {
+    void singleTx_success() {
 
         //given
-        String username = "SingleTxOff_success";
+        String username = "singleTxOff_success";
 
         //when
         memberService.joinV1(username);
@@ -88,10 +88,52 @@ class MemberServiceTest {
      * logRepository    @Transactional: OFF
      */
     @Test
-    void SingleTx_fail() {
+    void singleTx_fail() {
 
         //given
-        String username = "로그예외_SingleTxOff_success";
+        String username = "로그예외_singleTxOff_fail";
+
+        //when
+        org.assertj.core.api.Assertions.assertThatThrownBy(
+            () -> memberService.joinV1(username)).isInstanceOf(RuntimeException.class);
+
+        //then: 모든 데이터 롤백
+        Assertions.assertTrue(memberRepository.find(username).isEmpty());
+        Assertions.assertTrue(logRepository.find(username).isEmpty());
+
+    }
+
+    /**
+     * memberService    @Transactional: ON
+     * memberRepository @Transactional: ON
+     * logRepository    @Transactional: ON
+     */
+    @Test
+    void outerTxOn_success() {
+
+        //given
+        String username = "outerTxOn_success";
+
+        //when
+        memberService.joinV1(username);
+
+        //then: 모든 데이터가 정상 저장
+        Assertions.assertTrue(memberRepository.find(username).isPresent());
+        Assertions.assertTrue(logRepository.find(username).isPresent());
+
+    }
+
+
+    /**
+     * memberService    @Transactional: ON
+     * memberRepository @Transactional: ON
+     * logRepository    @Transactional: ON
+     */
+    @Test
+    void outerTxOn_fail() {
+
+        //given
+        String username = "로그예외_outerTxOn_fail";
 
         //when
         org.assertj.core.api.Assertions.assertThatThrownBy(
