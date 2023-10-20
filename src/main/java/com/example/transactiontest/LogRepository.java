@@ -15,7 +15,7 @@ public class LogRepository {
 
     private final EntityManager em;
 
-    public static String TERM = "로그 예외";
+    public static String TERM = "로그예외";
     @Transactional
     public void save(Log logMessage){
         log.info("log 저장");
